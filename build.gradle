@@ -1,0 +1,63 @@
+// Plugins et configuration Java
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.5'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+// Set explicit encoding
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+	systemProperty 'file.encoding', 'UTF-8'
+}
+
+// Repositories
+repositories {
+	mavenCentral()
+}
+
+// Configurations pour DevTools
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+
+// Dépendances (tout regroupé dans un seul bloc)
+dependencies {
+	// Web + Validation
+	implementation 'org.springframework.integration:spring-integration-mqtt:6.5.1'
+implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Sécurité + Firebase
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'com.google.firebase:firebase-admin:9.3.0'
+
+	// DevTools (uniquement en dev)
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// Tests
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// Tâches de tests
+tasks.named('test') {
+	useJUnitPlatform()
+}
