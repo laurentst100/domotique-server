@@ -4,6 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+# Ignorer la clé de service Firebase
+src/main/resources/firebase-service-account.json
+
 
 ### STS ###
 .apt_generated
