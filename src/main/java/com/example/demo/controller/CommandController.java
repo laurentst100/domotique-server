@@ -1,3 +1,5 @@
+package com.example.demo.controller;
+
 import com.example.demo.mqtt.MqttGatewayService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -5,20 +7,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/")
 public class CommandController {
-    private final MqttGatewayService mqtt;
 
-    public CommandController(MqttGatewayService mqtt) {
-        this.mqtt = mqtt;
+    private final MqttGatewayService mqttService;
+
+    public CommandController(MqttGatewayService mqttService) {
+        this.mqttService = mqttService;
     }
 
     @PostMapping("/commands/{deviceId}/{command}")
     public ResponseEntity<String> receiveCommand(@PathVariable String deviceId, @PathVariable String command) {
-        try {
-            mqtt.publishCommand(deviceId, command);
-            return ResponseEntity.ok("Commande '" + command + "' publiée !");
-        } catch (Exception ex) {
-            return ResponseEntity.status(500).body("Erreur MQTT : " + ex.getMessage());
-        }
+        mqttService.publishCommand(deviceId, command); // "ON" ou "OFF"
+        return ResponseEntity.ok("Commande '" + command + "' publiée !");
     }
 
     @GetMapping("/health")
