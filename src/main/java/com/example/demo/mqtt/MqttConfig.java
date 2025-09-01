@@ -42,12 +42,18 @@ public class MqttConfig {
 // Dans MqttConfig.java
 // Dans MqttConfig.java
 
+
 @Bean
 @ServiceActivator(inputChannel = "mqttOutboundChannel")
 public MessageHandler mqttOutbound() {
     // Client ID unique pour éviter les conflits
     MqttPahoMessageHandler handler = new MqttPahoMessageHandler("backend-render-client", mqttClientFactory());
     handler.setAsync(true);
+    
+    // --- CORRECTION FINALE : On force la Qualité de Service à 1 ---
+    // Cela garantit que le message sera délivré au broker.
+    handler.setDefaultQos(1);
+    
     return handler;
 }
 
