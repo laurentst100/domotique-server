@@ -29,7 +29,7 @@ public class MqttConfig {
         options.setServerURIs(new String[] { brokerUrl });
         options.setUserName(username);
         options.setPassword(password.toCharArray());
-        options.setCleanSession(true);
+        options.setCleanSession(true); 
         factory.setConnectionOptions(options);
         return factory;
     }
