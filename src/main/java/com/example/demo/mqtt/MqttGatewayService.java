@@ -19,9 +19,17 @@ public class MqttGatewayService {
 
     public void publishCommand(String deviceId, String command) {
         String topic = String.format(cmdTopicTemplate, deviceId);
+        
+        // --- LOG DE DÉBOGAGE ---
+        System.out.println("Dans MqttGatewayService : Préparation de l'envoi du message...");
+        System.out.println("Topic cible : " + topic);
+        System.out.println("Payload (message) : " + command);
+
         var msg = MessageBuilder.withPayload(command)
                 .setHeader("mqtt_topic", topic)
                 .build();
+        
         mqttOutboundChannel.send(msg);
+        System.out.println("-> Message envoyé au canal MQTT.");
     }
 }
