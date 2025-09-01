@@ -40,13 +40,16 @@ public class MqttConfig {
     }
 
 // Dans MqttConfig.java
+// Dans MqttConfig.java
+
 @Bean
 @ServiceActivator(inputChannel = "mqttOutboundChannel")
 public MessageHandler mqttOutbound() {
-    // --- NOUVEAU : Client ID unique pour le publisher ---
-    MqttPahoMessageHandler handler = new MqttPahoMessageHandler("backend-publisher-client", mqttClientFactory());
+    // Client ID unique pour éviter les conflits
+    MqttPahoMessageHandler handler = new MqttPahoMessageHandler("backend-render-client", mqttClientFactory());
     handler.setAsync(true);
     return handler;
 }
+
 
 }
