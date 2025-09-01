@@ -55,6 +55,7 @@ implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 	// Tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 // Tâches de tests
