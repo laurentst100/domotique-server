@@ -14,6 +14,12 @@ public class CommandController {
     this.mqtt = mqtt;
   }
 
+
+@GetMapping("/health")
+public String healthCheck() {
+   return "Service is up and running!";
+}
+
   @PostMapping("/{deviceId}/{cmd}")
   public ResponseEntity<String> send(@PathVariable String deviceId, @PathVariable String cmd) {
     mqtt.sendCommand(deviceId, cmd);

@@ -13,12 +13,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable()) // Désactive la protection CSRF pour les API
-            .authorizeHttpRequests(authz -> authz
-                // --- MODIFICATION IMPORTANTE ---
-                // Autorise toutes les requêtes vers les endpoints de commande sans authentification
-                .requestMatchers("/commands/**").permitAll() 
-                // Exige une authentification pour toutes les autres requêtes
-                .anyRequest().authenticated() 
+         // Dans SecurityConfig.java
+
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/commands/**").permitAll()
+                .requestMatchers("/commands/health").permitAll() // Ajoute cette ligne
+                .anyRequest().authenticated()
             );
 
         // Si tu utilises un filtre Firebase, tu peux le commenter ou le laisser pour le moment
