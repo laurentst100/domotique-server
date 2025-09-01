@@ -15,10 +15,14 @@ public class CommandController {
   }
 
 
+
+//Dans CommandController.java
+
 @GetMapping("/health")
 public String healthCheck() {
-   return "Service is up and running!";
+ return "Service is up and running!";
 }
+
 
   @PostMapping("/{deviceId}/{cmd}")
   public ResponseEntity<String> send(@PathVariable String deviceId, @PathVariable String cmd) {
