@@ -39,11 +39,14 @@ public class MqttConfig {
         return new DirectChannel();
     }
 
-    @Bean
-    @ServiceActivator(inputChannel = "mqttOutboundChannel")
-    public MessageHandler mqttOutbound() {
-        MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler("server-publisher-final", mqttClientFactory());
-        messageHandler.setAsync(true);
-        return messageHandler;
-    }
+// Dans MqttConfig.java
+@Bean
+@ServiceActivator(inputChannel = "mqttOutboundChannel")
+public MessageHandler mqttOutbound() {
+    // --- NOUVEAU : Client ID unique pour le publisher ---
+    MqttPahoMessageHandler handler = new MqttPahoMessageHandler("backend-publisher-client", mqttClientFactory());
+    handler.setAsync(true);
+    return handler;
+}
+
 }
