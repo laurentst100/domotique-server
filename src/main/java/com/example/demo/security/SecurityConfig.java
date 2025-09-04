@@ -13,15 +13,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Désactive la protection CSRF pour les API
-            .authorizeHttpRequests(authorize -> authorize
-                // Autorise toutes les requêtes vers les commandes
-                .requestMatchers("/commands/**").permitAll()
-                // Autorise toutes les requêtes vers le test de santé
-                .requestMatchers("/health").permitAll()
-                // Exige une authentification pour toutes les autres requêtes (pour l'instant, aucune)
-                .anyRequest().authenticated()
-            );
+            .csrf().disable()  // Désactiver CSRF pour les tests
+            .authorizeHttpRequests()
+                .requestMatchers("/api/commands/**").permitAll()  // Permettre tous les accès aux commandes
+                .requestMatchers("/api/health").permitAll()       // Health check public
+                .anyRequest().authenticated()  // Autres endpoints protégés
+            .and()
+            .httpBasic();
+        
         return http.build();
     }
 }
