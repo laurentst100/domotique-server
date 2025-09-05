@@ -4,6 +4,7 @@ import com.example.demo.mqtt.MqttGatewayService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/commands")
 public class CommandController {
