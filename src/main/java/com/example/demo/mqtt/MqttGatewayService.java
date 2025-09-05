@@ -36,4 +36,40 @@ public void publishCommand(String deviceId, String command) {
     System.out.println("========================");
 }
 
+
+    // Ajouter ces méthodes dans ton MqttGatewayService existant
+
+public void publishMessage(String topic, String message) {
+    try {
+        var mqttMessage = MessageBuilder.withPayload(message)
+                .setHeader("mqtt_topic", topic)
+                .build();
+        
+        boolean sent = mqttOutboundChannel.send(mqttMessage);
+        
+        if (sent) {
+            System.out.println("✅ Message publié sur " + topic);
+        } else {
+            System.err.println("❌ Échec publication sur " + topic);
+        }
+    } catch (Exception e) {
+        System.err.println("❌ Erreur MQTT: " + e.getMessage());
+    }
+}
+
+public void publishAlert(String deviceId, String alertType, Double currentValue, Double threshold) {
+    String alertTopic = "home/devices/esp32-1/" + deviceId + "/alert";
+    
+    org.json.JSONObject payload = new org.json.JSONObject();
+    payload.put("type", alertType);
+    payload.put("deviceId", deviceId);
+    payload.put("current", currentValue);
+    payload.put("threshold", threshold);
+    payload.put("timestamp", System.currentTimeMillis());
+    payload.put("severity", "HIGH");
+    
+    publishMessage(alertTopic, payload.toString());
+}
+
+
 }
