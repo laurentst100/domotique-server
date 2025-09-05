@@ -40,6 +40,42 @@ public class MqttConfig {
     }
 
 // Dans MqttConfig.java
+    // Ajouter cette méthode dans ton MqttConfig existant
+
+@Bean
+public IntegrationFlow mqttConsumptionInboundFlow(MqttPahoClientFactory clientFactory) {
+    return IntegrationFlows
+        .from(Mqtt.messageDrivenChannelAdapter(
+            clientFactory,
+            "backend-consumption-consumer",
+            "home/devices/esp32-1/+/consumption"))
+        .handle(message -> {
+            try {
+                String topic = message.getHeaders().get("mqtt_receivedTopic").toString();
+                String payload = message.getPayload().toString();
+                
+                System.out.println("📊 Données consommation reçues: " + topic + " -> " + payload);
+                
+                // Parser le JSON
+                org.json.JSONObject json = new org.json.JSONObject(payload);
+                
+                ConsumptionData data = new ConsumptionData();
+                data.setDeviceId(json.getString("deviceId"));
+                data.setCurrent(json.getDouble("current"));
+                data.setPower(json.getDouble("power"));
+                data.setVoltage(json.getDouble("voltage"));
+                data.setTimestamp(json.getLong("timestamp"));
+                
+                // Sauvegarder et vérifier les seuils
+                consumptionService.saveConsumptionData(data);
+                
+            } catch (Exception e) {
+                System.err.println("❌ Erreur traitement consommation: " + e.getMessage());
+            }
+        })
+        .get();
+}
+
 // Dans MqttConfig.java
 
 
