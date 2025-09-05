@@ -17,19 +17,23 @@ public class MqttGatewayService {
         this.mqttOutboundChannel = mqttOutboundChannel;
     }
 
-    public void publishCommand(String deviceId, String command) {
-        String topic = String.format(cmdTopicTemplate, deviceId);
-        
-        // --- LOG DE DÉBOGAGE ---
-        System.out.println("Dans MqttGatewayService : Préparation de l'envoi du message...");
-        System.out.println("Topic cible : " + topic);
-        System.out.println("Payload (message) : " + command);
+// Dans MqttGatewayService.java
+public void publishCommand(String deviceId, String command) {
+    String topic = String.format(cmdTopicTemplate, deviceId);
+    
+    // AJOUTER CES LOGS
+    System.out.println("📤 === PUBLICATION MQTT ===");
+    System.out.println("Topic exact: [" + topic + "]");
+    System.out.println("Message exact: [" + command + "]");
+    System.out.println("Template utilisé: [" + cmdTopicTemplate + "]");
+    
+    var message = MessageBuilder.withPayload(command)
+            .setHeader("mqtt_topic", topic)
+            .build();
+    
+    boolean sent = mqttOutboundChannel.send(message);
+    System.out.println(sent ? "✅ Message envoyé au broker" : "❌ Échec envoi");
+    System.out.println("========================");
+}
 
-        var msg = MessageBuilder.withPayload(command)
-                .setHeader("mqtt_topic", topic)
-                .build();
-        
-        mqttOutboundChannel.send(msg);
-        System.out.println("-> Message envoyé au canal MQTT.");
-    }
 }
