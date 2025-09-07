@@ -55,6 +55,7 @@ implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 
     // 2. Pour la manipulation de JSON avec org.json
     // Fournit la classe JSONObject
+	 implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.json:json:20230227'
 	// Tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
