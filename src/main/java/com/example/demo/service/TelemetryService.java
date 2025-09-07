@@ -1,0 +1,26 @@
+package com.example.demo.service;
+
+import com.example.demo.entity.TelemetryData;
+import com.example.demo.repository.TelemetryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.List;
+
+@Service
+public class TelemetryService {
+
+    @Autowired
+    private TelemetryRepository telemetryRepository;
+
+    public TelemetryData saveTelemetry(TelemetryData telemetryData) {
+        // S'assurer que le timestamp est bien celui du serveur à la réception
+        telemetryData.setTimestamp(Instant.now());
+        return telemetryRepository.save(telemetryData);
+    }
+
+    public List<TelemetryData> getLatestTelemetryForAllDevices() {
+        return telemetryRepository.findLatestForEachDevice();
+    }
+}
