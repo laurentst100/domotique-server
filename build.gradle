@@ -51,7 +51,11 @@ implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 
 	// DevTools (uniquement en dev)
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+ implementation 'org.springframework.integration:spring-integration-mqtt'
 
+    // 2. Pour la manipulation de JSON avec org.json
+    // Fournit la classe JSONObject
+    implementation 'org.json:json:20230227'
 	// Tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
