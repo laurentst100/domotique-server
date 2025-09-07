@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.TelemetryData;
+import com.example.demo.model.TelemetryData;
 import com.example.demo.service.TelemetryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
