@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.TelemetryData;
+import com.example.demo.model.TelemetryData;
 import com.example.demo.repository.TelemetryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
