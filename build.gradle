@@ -40,38 +40,22 @@ configurations {
 // Dépendances (tout regroupé dans un seul bloc)
 dependencies {
 	// Web + Validation
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // Pour le web et les contrôleurs REST
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    
-    // Pour la validation des données (@Valid, @NotBlank, etc.)
+	  implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-    // Pour la sécurité
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // Indispensable pour @Entity, @Id, etc.
 
     // --- Dépendances pour MQTT ---
-
-    // Dépendance principale pour l'intégration MQTT
-    // Elle inclut spring-integration-core, qui contient IntegrationFlows
+    // Inclus spring-integration-core, qui contient IntegrationFlows
     implementation 'org.springframework.integration:spring-integration-mqtt'
-
-    // Le client Paho MQTT, nécessaire pour la connexion
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 
     // --- Autres Dépendances ---
-
-    // Pour Firebase Admin
     implementation 'com.google.firebase:firebase-admin:9.3.0'
-
-    // Pour le traitement JSON avec org.json
     implementation 'org.json:json:20230227'
 
-    // Pour le développement (rechargement à chaud)
+    // --- Dépendances de Développement et de Test ---
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-    // --- Dépendances de Test ---
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework.security:spring-security-test'
