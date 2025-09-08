@@ -1,8 +1,8 @@
 // Plugins et configuration Java
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.5'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'com.example'
@@ -10,42 +10,29 @@ version = '0.0.1-SNAPSHOT'
 description = 'Demo project for Spring Boot'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
-// Set explicit encoding
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 
-tasks.withType(Test) {
-	systemProperty 'file.encoding', 'UTF-8'
-}
-
-// Repositories
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
-// Configurations pour DevTools
-configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
-}
-
-// Dépendances (tout regroupé dans un seul bloc)
+// Dépendances
 dependencies {
-	// Web + Validation
-	 implementation 'org.springframework.boot:spring-boot-starter-web'
+    // --- Starters Spring Boot Essentiels ---
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // --- Dépendances pour Spring Integration et MQTT (Version Explicite) ---
+    // On force la version pour être sûr qu'elle est compatible
     implementation 'org.springframework.integration:spring-integration-core'
     implementation 'org.springframework.integration:spring-integration-mqtt'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
@@ -61,7 +48,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// Tâches de tests
+// Configuration des Tâches de Test
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
