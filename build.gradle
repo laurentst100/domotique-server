@@ -40,6 +40,7 @@ dependencies {
     // --- Autres Dépendances ---
     implementation 'com.google.firebase:firebase-admin:9.3.0'
     implementation 'org.json:json:20230227'
+    runtimeOnly 'org.postgresql:postgresql'
 
     // --- Développement et Test ---
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
