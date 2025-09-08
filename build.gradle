@@ -40,25 +40,28 @@ configurations {
 // Dépendances (tout regroupé dans un seul bloc)
 dependencies {
 	// Web + Validation
-	  implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // Indispensable pour @Entity, @Id, etc.
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // --- Dépendances pour MQTT ---
-    // Inclus spring-integration-core, qui contient IntegrationFlows
+    // --- Dépendances pour Spring Integration et MQTT ---
+    // Module principal qui contient IntegrationFlows et le Java DSL
+    implementation 'org.springframework.integration:spring-integration-core'
+    // Module spécifique pour MQTT
     implementation 'org.springframework.integration:spring-integration-mqtt'
+    // Le client Paho, implémentation du protocole MQTT
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 
     // --- Autres Dépendances ---
     implementation 'com.google.firebase:firebase-admin:9.3.0'
     implementation 'org.json:json:20230227'
 
-    // --- Dépendances de Développement et de Test ---
+    // --- Développement et Test ---
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 // Tâches de tests
