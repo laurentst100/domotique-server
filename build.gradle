@@ -40,29 +40,41 @@ configurations {
 // Dépendances (tout regroupé dans un seul bloc)
 dependencies {
 	// Web + Validation
-	implementation 'org.springframework.integration:spring-integration-mqtt:6.5.1'
-implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	// Sécurité + Firebase
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'com.google.firebase:firebase-admin:9.3.0'
+    // Pour le web et les contrôleurs REST
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    
+    // Pour la validation des données (@Valid, @NotBlank, etc.)
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// DevTools (uniquement en dev)
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    // Pour la sécurité
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // --- Dépendances pour MQTT ---
 
-    // 2. Pour la manipulation de JSON avec org.json
-    // Fournit la classe JSONObject
-	 implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // Dépendance principale pour l'intégration MQTT
+    // Elle inclut spring-integration-core, qui contient IntegrationFlows
+    implementation 'org.springframework.integration:spring-integration-mqtt'
+
+    // Le client Paho MQTT, nécessaire pour la connexion
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+
+    // --- Autres Dépendances ---
+
+    // Pour Firebase Admin
+    implementation 'com.google.firebase:firebase-admin:9.3.0'
+
+    // Pour le traitement JSON avec org.json
     implementation 'org.json:json:20230227'
-	 implementation 'org.springframework.integration:spring-integration-java-dsl:1.2.6.RELEASE' // Note: Utilise une version compatible ou laisse Spring la gérer
 
-	// Tests
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'org.springframework.security:spring-security-test'
+    // Pour le développement (rechargement à chaud)
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // --- Dépendances de Test ---
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 // Tâches de tests
