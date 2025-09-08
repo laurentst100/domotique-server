@@ -1,10 +1,14 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.HourlyPowerSummary;
 import com.example.demo.model.TelemetryData;
 import com.example.demo.service.TelemetryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -33,5 +37,10 @@ public class TelemetryController {
     public ResponseEntity<List<TelemetryData>> getLatestTelemetry() {
         List<TelemetryData> latestData = telemetryService.getLatestTelemetryForAllDevices();
         return ResponseEntity.ok(latestData);
+    }
+     @GetMapping("/summary/24h")
+    public ResponseEntity<List<HourlyPowerSummary>> get24HourSummary() {
+        List<HourlyPowerSummary> summary = telemetryService.getHourlySummaryForLast24Hours();
+        return ResponseEntity.ok(summary);
     }
 }
