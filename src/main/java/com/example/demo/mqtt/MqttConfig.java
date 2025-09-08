@@ -1,7 +1,7 @@
 package com.example.demo.mqtt;
 
-import com.example.demo.model.TelemetryData; // Assure-toi que c'est bien le bon package !
-import com.example.demo.service.TelemetryService; // Tu auras besoin de ce service
+import com.example.demo.model.TelemetryData;
+import com.example.demo.service.TelemetryService;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.dsl.IntegrationFlow;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
@@ -32,7 +30,7 @@ public class MqttConfig {
     private String password;
 
     @Autowired
-    private TelemetryService telemetryService; // Injection du service pour sauvegarder
+    private TelemetryService telemetryService;
 
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {
@@ -46,7 +44,7 @@ public class MqttConfig {
         return factory;
     }
 
-    // --- CANAL POUR LES MESSAGES SORTANTS (COMMANDES VERS ESP32) ---
+    // --- PARTIE SORTANTE (INCHANGÉE) ---
     @Bean
     public MessageChannel mqttOutboundChannel() {
         return new DirectChannel();
@@ -57,47 +55,55 @@ public class MqttConfig {
     public MessageHandler mqttOutbound() {
         MqttPahoMessageHandler handler = new MqttPahoMessageHandler("backend-render-client", mqttClientFactory());
         handler.setAsync(true);
-        handler.setDefaultQos(1); // Garantir la livraison
+        handler.setDefaultQos(1);
         return handler;
     }
 
-    // --- FLUX POUR LES MESSAGES ENTRANTS (TÉLÉMÉTRIE DE L'ESP32) ---
+    // --- PARTIE ENTRANTE (MODIFIÉE POUR ÉVITER IntegrationFlows) ---
+
+    // 1. On crée le "tuyau" d'entrée
     @Bean
-    public IntegrationFlow mqttInboundFlow() {
-        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(
-                "backend-telemetry-consumer", // ID client unique pour cet adaptateur
-                mqttClientFactory(),
-                "home/devices/esp32-1/+/telemetry" // S'abonner à tous les topics de télémétrie
-        );
+    public MessageChannel mqttInputChannel() {
+        return new DirectChannel();
+    }
+
+    // 2. On branche l'adaptateur MQTT à l'entrée du tuyau
+    @Bean
+    public MqttPahoMessageDrivenChannelAdapter inbound() {
+        MqttPahoMessageDrivenChannelAdapter adapter =
+                new MqttPahoMessageDrivenChannelAdapter("backend-telemetry-consumer",
+                                                        mqttClientFactory(),
+                                                        "home/devices/esp32-1/+/telemetry");
         adapter.setCompletionTimeout(5000);
         adapter.setQos(1);
+        adapter.setOutputChannel(mqttInputChannel()); // On connecte l'adaptateur au tuyau
+        return adapter;
+    }
 
-        return IntegrationFlows.from(adapter)
-                .handle(message -> {
-                    try {
-                        String topic = message.getHeaders().get("mqtt_receivedTopic", String.class);
-                        String payload = message.getPayload().toString();
-                        System.out.println("📊 Télémétrie reçue: " + topic + " -> " + payload);
+    // 3. On place l'"ouvrier" au bout du tuyau pour traiter les messages
+    @Bean
+    @ServiceActivator(inputChannel = "mqttInputChannel")
+    public MessageHandler handler() {
+        return message -> {
+            try {
+                String topic = message.getHeaders().get("mqtt_receivedTopic", String.class);
+                String payload = message.getPayload().toString();
+                System.out.println("📊 Télémétrie reçue: " + topic + " -> " + payload);
 
-                        // Extraire l'ID de l'appareil depuis le topic
-                        String[] topicParts = topic.split("/");
-                        String deviceId = topicParts[3];
+                String[] topicParts = topic.split("/");
+                String deviceId = topicParts[3];
 
-                        // Parser le JSON
-                        JSONObject json = new JSONObject(payload);
-                        TelemetryData data = new TelemetryData();
-                        data.setDeviceId(deviceId);
-                        data.setStatus(json.getString("status"));
-                        data.setCurrent(json.getDouble("current"));
-                        data.setPower(json.getDouble("power"));
+                JSONObject json = new JSONObject(payload);
+                TelemetryData data = new TelemetryData();
+                data.setDeviceId(deviceId);
+                data.setStatus(json.getString("status"));
+                data.setCurrent(json.getDouble("current"));
+                data.setPower(json.getDouble("power"));
 
-                        // Sauvegarder les données via le service
-                        telemetryService.saveTelemetry(data);
-
-                    } catch (Exception e) {
-                        System.err.println("❌ Erreur traitement télémétrie MQTT: " + e.getMessage());
-                    }
-                })
-                .get();
+                telemetryService.saveTelemetry(data);
+            } catch (Exception e) {
+                System.err.println("❌ Erreur traitement télémétrie MQTT: " + e.getMessage());
+            }
+        };
     }
 }
